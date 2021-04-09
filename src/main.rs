@@ -5,17 +5,17 @@ use server::*;
 fn main() {
     let mut routes: Vec<Route> = Vec::new();
 
-    routes.push(Route::new(
-        "get".to_string(),
-        "/".to_string(),
-        "index.html".to_string()
-    ));
+    routes.push(Route {
+        method: "get",
+        url: "/",
+        file: "index.html"
+    });
 
-    routes.push(Route::new(
-        "get".to_string(),
-        "/style".to_string(),
-        "index.css".to_string()
-    ));
+    routes.push(Route {
+        method: "get",
+        url: "/style",
+        file: "index.css"
+    });
 
     listen(routes, "7878".to_string());
 }
