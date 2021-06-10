@@ -5,3 +5,7 @@ pub fn home<'a>() -> &'a str {
 pub fn style_page<'a>() -> &'a str {
     "index.css"
 }
+
+pub fn post<'a>() -> &'a str {
+    "index.html"
+}

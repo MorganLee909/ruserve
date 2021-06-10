@@ -25,6 +25,13 @@ impl<'a> App<'a> {
             f: f
         });
     }
+
+    pub fn post(&mut self, route: &str, f: fn() -> &'a str) {
+        self.post_list.push(Route {
+            route: route.to_string(),
+            f: f
+        });
+    }
 }
 
 pub fn create_app<'a>() -> App<'a> {
@@ -43,12 +50,13 @@ pub fn listen(app: App, port: &str) {
             Ok(mut result) => {
                 let mut buffer = [0; 1024];
                 result.read(&mut buffer).unwrap();
-                // println!("{}", String::from_utf8_lossy(&buffer[..]));
+                println!("{}", String::from_utf8_lossy(&buffer[..]));
                 let request_string = String::from_utf8_lossy(&buffer[..]);
                 let words: Vec<&str> = request_string.split(" ").collect();
 
                 let response = match words[0] {
                     "GET" => get_request(words[1], &app),
+                    "POST" => post_request(words[1], &app),
                     _ => panic!("{}", "AAAAAHHH!!!")
                 };
 
@@ -64,6 +72,18 @@ pub fn listen(app: App, port: &str) {
 fn get_request(request: &str ,app: &App) -> String {
     let mut response: String = String::from("");
     for route in &app.get_list {
+        if route.route == request {
+            response = format_response((route.f)());
+            break;
+        }
+    }
+
+    response
+}
+
+fn post_request(request: &str, app: &App) -> String {
+    let mut response: String = String::from("");
+    for route in &app.post_list {
         if route.route == request {
             response = format_response((route.f)());
             break;

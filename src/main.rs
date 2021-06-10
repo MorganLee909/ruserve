@@ -9,6 +9,7 @@ fn main() {
 
     app.get("/", home);
     app.get("/style", style_page);
+    app.post("/", post);
 
     listen(app, "7878");
 }
