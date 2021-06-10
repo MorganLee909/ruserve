@@ -1,21 +1,14 @@
 mod server;
+mod controller;
 
 use server::*;
+use controller::*;
 
 fn main() {
-    let mut routes: Vec<Route> = Vec::new();
+    let mut app = create_app();
 
-    routes.push(Route {
-        method: "get",
-        url: "/",
-        file: "index.html"
-    });
+    app.get("/", home);
+    app.get("/style", style_page);
 
-    routes.push(Route {
-        method: "get",
-        url: "/style",
-        file: "index.css"
-    });
-
-    listen(routes, "7878".to_string());
+    listen(app, "7878");
 }
