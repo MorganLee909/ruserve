@@ -75,7 +75,6 @@ fn get_request(request: &str ,app: &App) -> String {
 
 fn format_response(file: &str) -> String {
     let status = "HTTP/1.1 200 OK\r\n\r\n";
-    // let file = fs::read_to_string(&file).unwrap();
     let file = match fs::read_to_string(&file) {
         Ok(result) => result,
         Err(_e) => fs::read_to_string("src/404.html").unwrap()
