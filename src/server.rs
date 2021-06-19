@@ -1,4 +1,5 @@
 use std::net::TcpListener;
+use std::collections::HashMap;
 use std::io::prelude::*;
 use std::fs;
 
@@ -52,15 +53,14 @@ pub fn listen(app: App, port: &str) {
                 result.read(&mut buffer).unwrap();
                 println!("{}", String::from_utf8_lossy(&buffer[..]));
                 let request_string = String::from_utf8_lossy(&buffer[..]);
-                let words: Vec<&str> = request_string.split(" ").collect();
-
-                let response = match words[0] {
-                    "GET" => get_request(words[1], &app),
-                    "POST" => post_request(words[1], &app),
+                let request_data = get_headers_and_request(&request_string);
+                
+                let response = match request_data.0[0] {
+                    "GET" => get_request(request_data.0[1], &app),
+                    "POST" => post_request(request_data.0[1], &app),
                     _ => panic!("{}", "AAAAAHHH!!!")
                 };
-
-
+                
                 result.write(response.as_bytes()).unwrap();
                 result.flush().unwrap();
             }
@@ -77,7 +77,7 @@ fn get_request(request: &str ,app: &App) -> String {
             break;
         }
     }
-
+    
     response
 }
 
@@ -89,7 +89,7 @@ fn post_request(request: &str, app: &App) -> String {
             break;
         }
     }
-
+    
     response
 }
 
@@ -100,4 +100,20 @@ fn format_response(file: &str) -> String {
         Err(_e) => fs::read_to_string("src/404.html").unwrap()
     };
     return format!("{}{}", status, file);
+}
+
+fn get_headers_and_request(request_string: &str) -> (Vec<&str>, HashMap<String, String>){
+    let mut lines = request_string.split("\n");
+    let request: Vec<&str> = lines.next().unwrap().split(" ").collect();
+    let mut headers = HashMap::new();
+    
+    for line in lines {
+        let mut split_line = line.split(": ");
+        println!("{}", split_line.next().unwrap());
+        println!("{}", split_line.next().unwrap());
+        println!("break");
+        // headers.insert(String::from(split_line.next().unwrap()), String::from(split_line.next().unwrap()));
+    }
+
+    (request, headers)
 }
