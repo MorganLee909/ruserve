@@ -10,5 +10,5 @@ fn main() {
     app.get("/", home);
     app.get("/style", style_page);
 
-    listen(app, "7878");
+    listen(app, "8000");
 }
